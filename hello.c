@@ -173,6 +173,8 @@ int main(void)
 
 	SysCtlDelay(800000);
 
+	ABCCPowerState = ABCCPOWER_RESET;
+
     while(1)
     {
 

@@ -18,7 +18,6 @@ void adis_interupt();
 uint32_t adis_self_test();
 void adis_reset();
 int SetOperatingMode(UINT16 mode);
-void ReadGTemp();
 void ReadGBias();
 int WriteGBias();
 void ReadABias();
@@ -32,6 +31,4 @@ void GlobCmmdGet();
 void GetIDandSerNr();
 void WriteReg(INT16 Reg,INT16 data);
 void WriteHalfReg(INT16 Reg,INT16 half,INT16 data);
-void ReadGyroRange();
-int WriteGyroRange();
 #endif

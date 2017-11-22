@@ -13,56 +13,46 @@
 #define ADIS16400_WRITE_UPPER_HALF 1
 
 #define ADIS16400_FLASH_CNT  0x00 /* Flash memory write count */
-#define ADIS16400_SUPPLY_OUT 0x02 /* Power supply measurement */
-#define ADIS16400_XGYRO_OUT 0x04 /* X-axis gyroscope output */
-#define ADIS16400_YGYRO_OUT 0x06 /* Y-axis gyroscope output */
-#define ADIS16400_ZGYRO_OUT 0x08 /* Z-axis gyroscope output */
-#define ADIS16400_XACCL_OUT 0x0A /* X-axis accelerometer output */
-#define ADIS16400_YACCL_OUT 0x0C /* Y-axis accelerometer output */
-#define ADIS16400_ZACCL_OUT 0x0E /* Z-axis accelerometer output */
-#define ADIS16400_XMAGN_OUT 0x10 /* X-axis magnetometer measurement */
-#define ADIS16400_YMAGN_OUT 0x12 /* Y-axis magnetometer measurement */
-#define ADIS16400_ZMAGN_OUT 0x14 /* Z-axis magnetometer measurement */
-#define ADIS16400_TEMP_OUT  0x16 /* Temperature output */
-#define ADIS16400_AUX_ADC   0x18 /* Auxiliary ADC measurement */
+#define ADIS16400_DIAG_STAT 0x02 /* Power supply measurement */
+#define ADIS16400_XGYRO_LOW 0x04 /* X-axis gyroscope output, lower word */
+#define ADIS16400_XGYRO_OUT 0x06 /* X-axis gyroscope output, upper word */
+#define ADIS16400_YGYRO_LOW 0x08 /* Y-axis gyroscope output, lower word */
+#define ADIS16400_YGYRO_OUT 0x0A /* Y-axis gyroscope output, upper word */
+#define ADIS16400_ZGYRO_LOW 0x0C /* Z-axis gyroscope output, lower word */
+#define ADIS16400_ZGYRO_OUT 0x0E /* Z-axis gyroscope output, upper word */
 
-#define ADIS16350_XTEMP_OUT 0x10 /* X-axis gyroscope temperature measurement */
-#define ADIS16350_YTEMP_OUT 0x12 /* Y-axis gyroscope temperature measurement */
-#define ADIS16350_ZTEMP_OUT 0x14 /* Z-axis gyroscope temperature measurement */
+#define ADIS16400_XACCL_LOW 0x10 /* X-axis accelerometer output, lower word */
+#define ADIS16400_XACCL_OUT 0x12 /* X-axis accelerometer output, upper word */
+#define ADIS16400_YACCL_LOW 0x14 /* Y-axis accelerometer output, lower word */
+#define ADIS16400_YACCL_OUT 0x16 /* Y-axis accelerometer output, upper word */
+#define ADIS16400_ZACCL_LOW 0x18 /* Z-axis accelerometer output, lower word */
+#define ADIS16400_ZACCL_OUT 0x1A /* Z-axis accelerometer output, upper word */
 
-#define ADIS16300_PITCH_OUT 0x12 /* X axis inclinometer output measurement */
-#define ADIS16300_ROLL_OUT  0x14 /* Y axis inclinometer output measurement */
-#define ADIS16300_AUX_ADC   0x16 /* Auxiliary ADC measurement */
+#define ADIS16400_SMPL_CNTR 0x1C /* Sample counter, MSC_CTRL[3:2] = 11 */
+#define ADIS16400_TEMP_OUT  0x1E /* Temperature output */
+
+#define ADIS16400_X_DELT_ANG 0x24 /* X-axis delta angle output */
+#define ADIS16400_Y_DELT_ANG 0x26 /* Y-axis delta angle output */
+#define ADIS16400_Z_DELT_ANG 0x28 /* Z-axis delta angle output */
+#define ADIS16400_X_DELT_VEL 0x2A /* X-axis delta velocity */
+#define ADIS16400_Y_DELT_VEL 0x2C /* Y-axis delta velocity */
+#define ADIS16400_Z_DELT_VEL 0x2E /* Z-axis delta velocity */
+
+#define ADIS16400_MSC_CTRL 0x32 /* Miscellaneous control  */
+#define ADIS16400_SYNC_SCAL 0x34 /* Sync input scale control  */
+#define ADIS16400_DEC_RATE 0x36 /* Decimation rate control */
+#define ADIS16400_FLTR_CTRL 0x38 /* Filter control, autonull record time */
 
 /* Calibration parameters */
-#define ADIS16400_XGYRO_OFF 0x1A /* X-axis gyroscope bias offset factor */
-#define ADIS16400_YGYRO_OFF 0x1C /* Y-axis gyroscope bias offset factor */
-#define ADIS16400_ZGYRO_OFF 0x1E /* Z-axis gyroscope bias offset factor */
-#define ADIS16400_XACCL_OFF 0x20 /* X-axis acceleration bias offset factor */
-#define ADIS16400_YACCL_OFF 0x22 /* Y-axis acceleration bias offset factor */
-#define ADIS16400_ZACCL_OFF 0x24 /* Z-axis acceleration bias offset factor */
-#define ADIS16400_XMAGN_HIF 0x26 /* X-axis magnetometer, hard-iron factor */
-#define ADIS16400_YMAGN_HIF 0x28 /* Y-axis magnetometer, hard-iron factor */
-#define ADIS16400_ZMAGN_HIF 0x2A /* Z-axis magnetometer, hard-iron factor */
-#define ADIS16400_XMAGN_SIF 0x2C /* X-axis magnetometer, soft-iron factor */
-#define ADIS16400_YMAGN_SIF 0x2E /* Y-axis magnetometer, soft-iron factor */
-#define ADIS16400_ZMAGN_SIF 0x30 /* Z-axis magnetometer, soft-iron factor */
-
-#define ADIS16400_GPIO_CTRL 0x32 /* Auxiliary digital input/output control */
-#define ADIS16400_MSC_CTRL  0x34 /* Miscellaneous control */
-#define ADIS16400_SMPL_PRD  0x36 /* Internal sample period (rate) control */
-#define ADIS16400_SENS_AVG  0x38 /* Dynamic range and digital filter control */
-#define ADIS16400_SLP_CNT   0x3A /* Sleep mode control */
-#define ADIS16400_DIAG_STAT 0x3C /* System status */
+#define ADIS16400_XGYRO_OFF 0x40 /* X-axis gyroscope bias offset factor */
+#define ADIS16400_YGYRO_OFF 0x42 /* Y-axis gyroscope bias offset factor */
+#define ADIS16400_ZGYRO_OFF 0x44 /* Z-axis gyroscope bias offset factor */
+#define ADIS16400_XACCL_OFF 0x46 /* X-axis acceleration bias offset factor */
+#define ADIS16400_YACCL_OFF 0x48 /* Y-axis acceleration bias offset factor */
+#define ADIS16400_ZACCL_OFF 0x4A /* Z-axis acceleration bias offset factor */
 
 /* Alarm functions */
 #define ADIS16400_GLOB_CMD  0x3E /* System command */
-#define ADIS16400_ALM_MAG1  0x40 /* Alarm 1 amplitude threshold */
-#define ADIS16400_ALM_MAG2  0x42 /* Alarm 2 amplitude threshold */
-#define ADIS16400_ALM_SMPL1 0x44 /* Alarm 1 sample size */
-#define ADIS16400_ALM_SMPL2 0x46 /* Alarm 2 sample size */
-#define ADIS16400_ALM_CTRL  0x48 /* Alarm control */
-#define ADIS16400_AUX_DAC   0x4A /* Auxiliary DAC data */
 
 #define ADIS16400_PRODUCT_ID 0x56 /* Product identifier */
 #define ADIS16400_SERIAL_NUMBER 0x58 /* Serial number */

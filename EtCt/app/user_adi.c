@@ -51,12 +51,12 @@ static const AD_AdiEntryType AD_asADIEntryList[] =
 		{106, "Rotation Speed Z", 	ABP_SINT16, 1, ABP_APPD_DESCR_GET_ACCESS| ABP_APPD_DESCR_MAPPABLE_READ_PD,	{{&iADI_Rot_Speed_Z, 	&sADI_Rot_SpeedProps}},NULL,NULL},
 		{107, "Error code",		 	ABP_UINT16, 1, ABP_APPD_DESCR_GET_ACCESS| ABP_APPD_DESCR_MAPPABLE_READ_PD,	{{&iADI_err, 			&sADI_Rot_SpeedProps}},NULL,NULL},
 		// gyro temp
-		{508, "Gyro Temperature X",		 					ABP_UINT16, 1,  ABP_APPD_DESCR_GET_ACCESS| ABP_APPD_DESCR_MAPPABLE_READ_PD
-																		,	{{&GTemp[0], 			&sADI_RegProps}},&ReadGTemp,NULL},
-		{509, "Gyro Temperature Y",		 					ABP_UINT16, 1, ABP_APPD_DESCR_GET_ACCESS| ABP_APPD_DESCR_MAPPABLE_READ_PD
-																		,	{{&GTemp[1], 			&sADI_RegProps}},&ReadGTemp,NULL},
-		{510, "Gyro Temperature Z",		 					ABP_UINT16, 1, ABP_APPD_DESCR_GET_ACCESS| ABP_APPD_DESCR_MAPPABLE_READ_PD
-																		,	{{&GTemp[2], 			&sADI_RegProps}},&ReadGTemp,NULL},
+//		{508, "Gyro Temperature X",		 					ABP_UINT16, 1,  ABP_APPD_DESCR_GET_ACCESS| ABP_APPD_DESCR_MAPPABLE_READ_PD
+//																		,	{{&GTemp[0], 			&sADI_RegProps}},&ReadGTemp,NULL},
+//		{509, "Gyro Temperature Y",		 					ABP_UINT16, 1, ABP_APPD_DESCR_GET_ACCESS| ABP_APPD_DESCR_MAPPABLE_READ_PD
+//																		,	{{&GTemp[1], 			&sADI_RegProps}},&ReadGTemp,NULL},
+//		{510, "Gyro Temperature Z",		 					ABP_UINT16, 1, ABP_APPD_DESCR_GET_ACCESS| ABP_APPD_DESCR_MAPPABLE_READ_PD
+//																		,	{{&GTemp[2], 			&sADI_RegProps}},&ReadGTemp,NULL},
 		//gyro bias offset
 		{511, "Gyro bias offset X",		 					ABP_UINT16, 1, ABP_APPD_DESCR_GET_ACCESS| ABP_APPD_DESCR_MAPPABLE_READ_PD|
 				ABP_APPD_DESCR_SET_ACCESS|ABP_APPD_DESCR_MAPPABLE_WRITE_PD,	{{&GBias[0], 			&sADI_RegProps}},&ReadGBias,&WriteGBias},
@@ -75,8 +75,8 @@ static const AD_AdiEntryType AD_asADIEntryList[] =
 		//dynamic range and digital filter
 		{517, "Digital Filter Settings",		 				ABP_UINT16, 1, ABP_APPD_DESCR_GET_ACCESS| ABP_APPD_DESCR_MAPPABLE_READ_PD|
 				ABP_APPD_DESCR_SET_ACCESS|ABP_APPD_DESCR_MAPPABLE_WRITE_PD,	{{&DFilter, 			&sADI_RegFilter}},&ReadDFilter,&WriteDFilter},
-		{518, "Gyro Range Settings",		 					ABP_UINT16, 1, ABP_APPD_DESCR_GET_ACCESS| ABP_APPD_DESCR_MAPPABLE_READ_PD|
-				ABP_APPD_DESCR_SET_ACCESS|ABP_APPD_DESCR_MAPPABLE_WRITE_PD,	{{&DRange, 			&sADI_RegRange}},&ReadGyroRange,&WriteGyroRange},
+//		{518, "Gyro Range Settings",		 					ABP_UINT16, 1, ABP_APPD_DESCR_GET_ACCESS| ABP_APPD_DESCR_MAPPABLE_READ_PD|
+//				ABP_APPD_DESCR_SET_ACCESS|ABP_APPD_DESCR_MAPPABLE_WRITE_PD,	{{&DRange, 			&sADI_RegRange}},&ReadGyroRange,&WriteGyroRange},
 		// global cmd
 
 		{519, "Autonull Gyro Bias",		 						ABP_BOOL, 1, ABP_APPD_DESCR_GET_ACCESS| ABP_APPD_DESCR_MAPPABLE_READ_PD|

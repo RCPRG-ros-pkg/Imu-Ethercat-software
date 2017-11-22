@@ -25,7 +25,7 @@
 
 #define ABCC_USER_DEBUG_EVENT_ENABLED
 #define ABCC_USER_DEBUG_ERR_ENABLED
-#define ABCC_USER_DEBUG_PRINT( args)                 UARTprintf("Debug: %s\n",args);
+#define ABCC_USER_DEBUG_PRINT( args)
 #define ABCC_USER_POLL_WRPD
 
 /*******************************************************************************

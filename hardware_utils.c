@@ -1,8 +1,11 @@
 
+#include "stdint.h"
+#include "stdbool.h"
 #include "hardware_utils.h"
 /**
  * platform specyfic include files
  */
+
 #include "driverlib/epi.h"
 #include "driverlib/ssi.h"
 #include "driverlib/sysctl.h"
@@ -66,7 +69,7 @@ void io_init(){
 	SSIEnable(SSI0_BASE);
 
 	//enabling interupt on D port
-	GPIOIntEnable(GPIO_PORTB_BASE,GPIO_PIN_4|GPIO_PIN_0);
+	GPIOIntEnable(GPIO_PORTB_BASE,GPIO_PIN_4);
 
 	// Sync Interrupt configuration
 	GPIOIntRegister(GPIO_PORTA_BASE,SyncInt);
@@ -139,7 +142,7 @@ void io_init(){
 	//
 	// Wait for the EPI initialization to complete.
 	//
-	SysCtlDelay(8000);
+	SysCtlDelay( (SysCtlClockGet()/(3*1000))*100);
 
 	GPIOPadConfigSet(GPIO_PORTA_BASE,GPIO_PIN_0,GPIO_STRENGTH_8MA,GPIO_PIN_TYPE_STD);
 	GPIOPinTypeGPIOOutput(GPIO_PORTA_BASE,GPIO_PIN_0);

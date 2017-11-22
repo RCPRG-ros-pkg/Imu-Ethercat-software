@@ -4,6 +4,8 @@
  *  Created on: 16 lip 2015
  *      Author: bkaczor
  */
+#include "inttypes.h"
+#include "stdbool.h"
 #include "driverlib/ssi.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/timer.h"
@@ -25,21 +27,38 @@ int reqMeasure=0;
 int timm;
 int debug;
 
+//uint32_t adisRead[]=
+//{
+//		ADIS16400_READ_REG(ADIS16400_XGYRO_OUT),
+//		ADIS16400_READ_REG(ADIS16400_YGYRO_OUT),
+//		ADIS16400_READ_REG(ADIS16400_ZGYRO_OUT),
+//		ADIS16400_READ_REG(ADIS16400_XACCL_OUT),
+//		ADIS16400_READ_REG(ADIS16400_YACCL_OUT),
+//		ADIS16400_READ_REG(ADIS16400_ZACCL_OUT),
+//		ADIS16400_READ_REG(ADIS16400_DIAG_STAT),
+//
+//};
+
 uint32_t adisRead[]=
 {
-		ADIS16400_READ_REG(ADIS16400_XGYRO_OUT),
-		ADIS16400_READ_REG(ADIS16400_YGYRO_OUT),
-		ADIS16400_READ_REG(ADIS16400_ZGYRO_OUT),
-		ADIS16400_READ_REG(ADIS16400_XACCL_OUT),
-		ADIS16400_READ_REG(ADIS16400_YACCL_OUT),
-		ADIS16400_READ_REG(ADIS16400_ZACCL_OUT),
-		ADIS16400_READ_REG(ADIS16400_DIAG_STAT),
-
+        0x3E00,
+        0x0000,
+        0x0000,
+        0x0000,
+        0x0000,
+        0x0000,
+        0x0000,
+        0x0000,
+        0x0000,
+        0x0000,
+        0x0000,
+        0x0000,
 };
+
 /**
  * Global adis value
  */
-uint32_t adisValues[7];
+uint32_t adisValues[11];
 
 /**
  * initialization of imu for work
@@ -49,9 +68,17 @@ uint32_t adis_init(){
 	//adis_io_init();
 	adis_reset();
 
+	uint32_t ret;
 
-
-	return adis_self_test();
+	//while(1){
+    WriteReg(ADIS16400_MSC_CTRL, 0xC1);
+    //WriteReg(ADIS16400_DEC_RATE, 0x09);
+	  //SSIDataPut(SSI0_BASE,0x5600);
+	  //SysCtlDelay(2000);
+	  //SSIDataGet(SSI0_BASE,&ret);
+	  //SysCtlDelay(720);
+	//}
+	return 0; //adis_self_test();
 }
 
 /**
@@ -65,35 +92,37 @@ void adis_interupt()
 	GPIOIntClear(GPIO_PORTB_BASE,GPIO_PIN_4);
 	//read all the data
 
+	int iSend = 0;;
+	int iReceive = 0;;
+	int iLength=11;
 
-	int i;
-	int iLength=7;
+	while (SSIDataGetNonBlocking(SSI0_BASE, &adisValues[0]));
 
-	for( i=0;  i<iLength;++i)
-	{
-		SSIDataPut(SSI0_BASE,adisRead[i]);
-	// Need to wait because ssibusy is not enough
-		SysCtlDelay(720);
-		SSIDataGet(SSI0_BASE,&adisValues[i]);
+	do {
+	    if (iSend < iLength) {
+	        iSend += SSIDataPutNonBlocking(SSI0_BASE, adisRead[iSend]);
+	    }
 
-	}
+        if (iReceive < iLength) {
+            iReceive += SSIDataGetNonBlocking(SSI0_BASE, &adisValues[iReceive]);
+        }
 
-	iADI_Rot_Speed_X=(adisValues[1]&0x3FFF)<<2;
-	iADI_Rot_Speed_Y=(adisValues[2]&0x3FFF)<<2;
-	iADI_Rot_Speed_Z=(adisValues[3]&0x3FFF)<<2;
+	} while ((iSend < iLength) || (iReceive < iLength));
 
-	iADI_Rot_Speed_X=iADI_Rot_Speed_X>>2;
-	iADI_Rot_Speed_Y=iADI_Rot_Speed_Y>>2;
-	iADI_Rot_Speed_Z=iADI_Rot_Speed_Z>>2;
+	//for( i=0;  i<iLength;++i)
+	//{
+	//	SSIDataPut(SSI0_BASE,adisRead[i]);
+	//	SSIDataGet(SSI0_BASE,&adisValues[i]);
+	//}
 
-	iADI_Accel_X=(adisValues[4]&0x3FFF)<<2;
-	iADI_Accel_Y=(adisValues[5]&0x3FFF)<<2;
-	iADI_Accel_Z=(adisValues[6]&0x3FFF)<<2;
-	iADI_err=timm;//errCode;
+	iADI_Rot_Speed_X = adisValues[2];
+	iADI_Rot_Speed_Y = adisValues[3];
+	iADI_Rot_Speed_Z = adisValues[4];
 
-	iADI_Accel_X=iADI_Accel_X>>2;
-	iADI_Accel_Y=iADI_Accel_Y>>2;
-	iADI_Accel_Z=iADI_Accel_Z>>2;
+	iADI_Accel_X = adisValues[5];
+	iADI_Accel_Y = adisValues[6];
+	iADI_Accel_Z = adisValues[7];
+	iADI_err = adisValues[1];
 
 	AD_NewWrPd();
 	GPIOIntEnable(GPIO_PORTB_BASE,GPIO_PIN_4);
@@ -104,7 +133,7 @@ void adis_interupt()
  */
 uint32_t adis_self_test(){
 	// disable interupts
-	GPIOIntDisable(GPIO_PORTB_BASE,GPIO_PIN_4);
+	/*GPIOIntDisable(GPIO_PORTB_BASE,GPIO_PIN_4);
 	//setting tenth bit in MSC_CTRL register in upper half shift is equal to number of bit minus 8
 	uint32_t command=ADIS16400_WRITE_REG(ADIS16400_MSC_CTRL|ADIS16400_WRITE_UPPER_HALF)|(1<<2);
 	uint32_t response;
@@ -159,8 +188,8 @@ uint32_t adis_self_test(){
 
 	SSIDataGet(SSI0_BASE, &response);
 	GetIDandSerNr();
-	GPIOIntEnable(GPIO_PORTB_BASE,GPIO_PIN_4);
-	return response;
+	GPIOIntEnable(GPIO_PORTB_BASE,GPIO_PIN_4);*/
+	return 0;
 }
 /**
  * reset imu
@@ -177,7 +206,9 @@ int SetOperatingMode(UINT16 mode)
 	if(mode==ADIS_OP_MODE_AUTO)
 	{
 		adis_reset();
-		return adis_self_test();
+		//WriteReg(ADIS16400_MSC_CTRL, 0xC1);
+		//WriteReg(ADIS16400_DEC_RATE, 0x09);
+		return 0; //adis_self_test();
 	}
 
 	else if(mode==ADIS_OP_MODE_MANUAL)
@@ -185,6 +216,7 @@ int SetOperatingMode(UINT16 mode)
 		if(sync_sInstance.inCapture!=0){
 			initTimer(CLOCK_RATE,sync_sInstance.inCapture);
 		}
+		/*
 		uint32_t command=ADIS16400_WRITE_REG(ADIS16400_GPIO_CTRL)|(1);
 		uint32_t response;
 		SSIDataPut(SSI0_BASE,command);
@@ -209,32 +241,12 @@ int SetOperatingMode(UINT16 mode)
 		SysCtlDelay(720);
 		SSIDataGet(SSI0_BASE, &response);
 
-		if(response & 1)
+		if(response & 1) */
 			return ADIS_MODE_SET_SUCCESS;
 	}
 	return ADIS_MODE_SET_ERROR;
 }
-void ReadGTemp()
-{
-	int i=0;
-	uint32_t ReadSeq[]={
-			ADIS16400_READ_REG(ADIS16350_XTEMP_OUT),
-			ADIS16400_READ_REG(ADIS16350_YTEMP_OUT),
-			ADIS16400_READ_REG(ADIS16350_ZTEMP_OUT),
-			ADIS16400_READ_REG(ADIS16400_DIAG_STAT)
-	};
-	uint32_t RetVal[4];
-	for( i=0;  i<4;++i)
-	{
-		SSIDataPut(SSI0_BASE,ReadSeq[i]);
-		SysCtlDelay(720);
-		SSIDataGet(SSI0_BASE,&RetVal[i]);
-	}
-	GTemp[0]= RetVal[1];
-	GTemp[1]= RetVal[2];
-	GTemp[2]= RetVal[3];
 
-}
 void ReadGBias()
 {
 	int i=0;
@@ -292,6 +304,7 @@ int WriteABias()
 }
 void ReadDFilter()
 {
+    /*
 	int i=0;
 	uint32_t ReadSeq[]={
 	ADIS16400_READ_REG(ADIS16400_SENS_AVG),
@@ -305,11 +318,11 @@ void ReadDFilter()
 		SSIDataGet(SSI0_BASE,&RetVal[i]);
 	}
 	DFilter= RetVal[1]&0xF;
-
+*/
 }
 int WriteDFilter()
 {
-	WriteHalfReg(ADIS16400_SENS_AVG,0,DFilter);
+	//WriteHalfReg(ADIS16400_SENS_AVG,0,DFilter);
 	return 0;
 }
 int GlobCmmdAutonullSet()
@@ -350,6 +363,7 @@ void GetIDandSerNr()
 		SSIDataPut(SSI0_BASE,ReadSeq[i]);
 		SysCtlDelay(720);
 		SSIDataGet(SSI0_BASE,&RetVal[i]);
+		SysCtlDelay(720);
 	}
 	ID= RetVal[1];
 	SerialNB= RetVal[2];
@@ -367,6 +381,7 @@ void WriteReg(INT16 Reg,INT16 data)
 		SSIDataPut(SSI0_BASE,ReadSeq[i]);
 		SysCtlDelay(720);
 		SSIDataGet(SSI0_BASE,&RetVal[i]);
+		SysCtlDelay(720);
 	}
 	//DFilter= RetVal[1];
 }
@@ -382,39 +397,8 @@ void WriteHalfReg(INT16 Reg,INT16 half,INT16 data)
 		SSIDataPut(SSI0_BASE,ReadSeq[i]);
 		SysCtlDelay(720);
 		SSIDataGet(SSI0_BASE,&RetVal[i]);
+		SysCtlDelay(720);
 	}
 	//DFilter= RetVal[1];
 }
-void ReadGyroRange()
-{
-	int i=0;
-		uint32_t ReadSeq[]={
-		ADIS16400_READ_REG(ADIS16400_SENS_AVG),
-		ADIS16400_READ_REG(ADIS16400_DIAG_STAT)
-		};
-		uint32_t RetVal[4];
-		for( i=0;  i<2;++i)
-		{
-			SSIDataPut(SSI0_BASE,ReadSeq[i]);
-			SysCtlDelay(720);
-			SSIDataGet(SSI0_BASE,&RetVal[i]);
-		}
-		DRange= (RetVal[1]>>8)&0xF;
-}
-int WriteGyroRange()
-{
-	if(DRange==3)
-	{
-		return 1;
-	}
-	if((DRange==(1<<1))&&(DFilter<=0x2))
-	{
-		return 1;
-	}
-	if((DRange==1)&&(DFilter<=0x4))
-	{
-		return 1;
-	}
-	WriteHalfReg(ADIS16400_SENS_AVG,1,DRange);
-	return 0;
-}
+
